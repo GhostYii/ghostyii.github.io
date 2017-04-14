@@ -1,7 +1,7 @@
 # Site settings
 title: Ghostyii's blog
 description: "Ghostyii的个人博客"
-baseurl: "GhostYii.github.io" # for test: remove string '/space-jekyll-templa' to ''
+baseurl: "" # for test: remove string '/space-jekyll-templa' to ''
 url: "https://github.com/GhostYii/GhostYii.github.io" # for test: remove string 'http://victorvoid.github.io' to '' but in production: 'https://yourusername.githu.io'
 # User settings
 username: Ghostyii
