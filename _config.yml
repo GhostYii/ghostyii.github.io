@@ -2,7 +2,7 @@
 title: Ghostyii | 远山长
 description: "Ghostyii的个人博客"
 baseurl: "" # for test: remove string '/space-jekyll-templa' to ''
-url: "https://github.com/GhostYii/GhostYii.github.io" # for test: remove string 'http://victorvoid.github.io' to '' but in production: 'https://yourusername.githu.io'
+url: "https://GhostYii.github.io" # for test: remove string 'http://victorvoid.github.io' to '' but in production: 'https://yourusername.githu.io'
 # User settings
 username: Ghostyii
 user_title: Ghostyii - 山长水远
