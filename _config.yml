@@ -1,11 +1,11 @@
 # Site settings
-title: Ghostyii's blog
+title: Ghostyii | 远山长
 description: "Ghostyii的个人博客"
 baseurl: "" # for test: remove string '/space-jekyll-templa' to ''
 url: "https://github.com/GhostYii/GhostYii.github.io" # for test: remove string 'http://victorvoid.github.io' to '' but in production: 'https://yourusername.githu.io'
 # User settings
 username: Ghostyii
-user_title: Ghostyii - 远山长
+user_title: Ghostyii - 山长水远
 email: ghostyiigame@outlook.com
 twitter_username: null
 github_username:  GhostYii
@@ -28,15 +28,15 @@ compress_html:
 # Links to include in menu navigation
 links:
   - title: 主页
-    url: /index.html
+    url: /
   - title: 文章列表
-    url: /posts/index.html
+    url: /posts
   - title: 分类
-    url: /series/index.html
+    url: /series
   - title: 标签
-    url: /tags/index.html
+    url: /tags
   - title: 关于
-    url: /about/index.html
+    url: /about
 # projects in header index
 projects:
   - name: InventorySystem
