@@ -43,7 +43,7 @@ categories:
       }
   }
   ```
-  为了测试我们先使用`Debug.DrawRay`方法在Gimoz里预览一下。
+  为了测试我们先使用`Debug.DrawRay`方法在Gizmos里预览一下。
 
   这样得到的效果如下图所示：
   ![RayCast360](..\assets\img\Unity2D\preview.png)
