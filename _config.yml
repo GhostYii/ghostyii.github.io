@@ -4,11 +4,13 @@ description: "Ghostyii的个人博客"
 baseurl: "" # for test: remove string '/space-jekyll-templa' to ''
 url: "https://GhostYii.github.io" # for test: remove string 'http://victorvoid.github.io' to '' but in production: 'https://yourusername.githu.io'
 # User settings
-username: Ghostyii
+username: GHOSTYII
 user_title: 月光 | 远山
 email: ghostyiigame@outlook.com
 twitter_username: null
 github_username:  GhostYii
+steam_id: 76561198223886292
+bilibili_id: 12585812
 gplus_username:  null
 disqus_username: null
 
