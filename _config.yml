@@ -17,6 +17,16 @@ disqus_username: null
 # Build settings
 markdown: kramdown
 highlighter: rouge
+kramdown:
+  input: GFM
+  extensions:
+    - autolink
+    - footnotes
+    - smart
+  enable_coderay: true
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    coderay_line_numbers:  nil
 permalink: /:title/
 
 

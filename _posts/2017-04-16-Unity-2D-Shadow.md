@@ -33,7 +33,7 @@ categories:
 ***
 ## 实现
   想通了原理之后就可以着手编码了，首先，实现一个向四面八方发射射线的效果，这个难度不大，稍有数学知识的人就能解决：
-  ```
+  ```csharp
   void RayCast360(Vector2 origin,float distance, int mask)
   {
       for (int i = 0; i < 360; i++)
@@ -49,7 +49,7 @@ categories:
   ![RayCast360](..\assets\img\Unity2D\preview.png)
 
   如愿以偿的产生了360条射线，这还只是一个简单的圆形，如果加上射线检测，便可成为一个可以被遮挡的多边形，只需要修改脚本如下：
-  ```
+  ```csharp
   void RayCast360(Vector2 origin,float distance, int mask)
    {
        for (int i = 0; i < 360; i++)
@@ -63,7 +63,7 @@ categories:
    }
   ```
 
-  这里我们先把遮罩选为`Everything`，即没有物体不会被剔除，此时只要在场景中存在一个带Collider的物体，即可被遮挡猪，如下图所示：
+  这里我们先把遮罩选为`Everything`，即所有带Collider的物体都会遮挡射线，此时只要在场景中存在带Collider的物体，即可被遮挡住，如下图所示：
   ![ColliderCulling](..\assets\img\Unity2D\preview2.png)
 
   如果此时存在一个数组来保存顶点，我们就可以得到一圈顶点，即可以使用LineRenderer来绘制封闭区域。
@@ -74,7 +74,7 @@ categories:
 
   修改脚本如下
 
-  ```
+  ```csharp
   void RayCast360(Vector2 origin,float distance, int mask)
   {
     List<Vector2> vertexLst = new List<Vector2>();
@@ -99,7 +99,7 @@ categories:
   渲染完成后的图形如下：
   ![LineLight](..\assets\img\Unity2D\preview3.png)
   完整代码如下：
-  ```
+  ```csharp
     void RayCast360(Vector2 origin,float distance, int mask)
     {
         line = GetComponent<LineRenderer>();
@@ -132,20 +132,54 @@ categories:
 
 ***
 ## 解决方案
-  这时候采用`MeshRenderer`是不错的选择，但是在这之前，我并没有使用过MeshRenderer来绘制图形的经验，然后我最终使用MeshRenderer解决了问题。
+  这时候采用`MeshRenderer`是不错的选择，使用`MeshRenderer`的话，基本思路就应该是
+  `获取顶点集，将该顶点集形成一个封闭多边形，然后将这个多边形triangulate，形成一个Mesh，通过MeshRenderer渲染出来`
 
-  参考资料： [Unity3D Mesh小课堂（三）圆形与圆环](http://blog.csdn.net/ecidevilin/article/details/52456107)
+### Mesh的创建
+  在Unity中，创建一个Mesh，需要三个数组，一个是顶点数组，一个是三角形顶点数组，一个是uv数组，这三个数组确定后，就可以绘制出一个唯一的Mesh，在上面的过程中，已经得到了顶点数组，
+  只需要计算出三角形顶点数组，这里没有使用到Material的贴图，所以在Mesh中，使用默认的uv即可。
+
+  那么如何去计算三角形顶点数组呢？
+
+  先看一个简单的例子，如果要渲染出一个三角形Mesh，其三个顶点坐标分别为 (0,0,0)、(0,1,0)、(1,0,0)，如图所示，
+  ![](..\assets\img\Unity2D\point3.png)
+  那么要去构成三角形，就需要把三个顶点按照一定顺序连接起来，这里可以用0-1-2这样的顺序，也可以使用2-1-0这样的顺序，但是要注意的一点是，在Unity中，绘制Mesh一定要顺时针构建三角形。
+  那么这样的话，我们的三角形顶点数组就可以是{0，1，2}了。其实其本质上就是顶点数组的下标。
+
+  现在已经可以绘制三角形了，那么我们如何去绘制一个圆呢？
+  其实，一个圆可以是很多小三角形拼接而成，如图所示：
+  ![](..\assets\img\Unity2D\circle.gif)
+
+  只要确定了圆心与顶点数组，就可以绘制出一个“圆”，当然，这个顶点数组的大小一定要足够大，不然就会变成一个多边形而不那么像圆了。那么这个三角形顶点数组是什么呢？
+  从上图可以看到，所有的三角形都有一个共同的顶点，也就是圆心。如果顶点数组的第0号元素是圆心坐标，那么这个顶点数组就可以是
+  ```
+   { 0, 1, 2, 0, 2, 3, ..., 0, n-2, n-1, 0, n-1, n }
+  ```
+  那么就可以开始绘制Mesh了。
 
   值得注意的一点是，Mesh中的顶点是基于模型空间的，如果将Unity中的世界坐标作为顶点传入会产生偏移，即会产生如下图的效果：
   ![](..\assets\img\Unity2D\light2d2.gif)
 
   需要使用`Transform.InverseTransformPoint`API来将世界坐标转为模型空间坐标才能得到最终的效果。
 
-  将代码做些许改动即可实现精度，即下图效果：
-![](..\assets\img\Unity2D\effect2.gif)  
+  参考资料： [Unity3D Mesh小课堂（三）圆形与圆环](http://blog.csdn.net/ecidevilin/article/details/52456107)
 
-  完整代码如下：
-  ```
+***
+## 拓展
+  从上方的分析来看，只需要对顶点数组的大小进行改变，就可以实现多边形的精度控制，如下图所示：
+  ![](..\assets\img\Unity2D\effect2.gif)  
+  但是在实际测试中发现，这个对性能的影响并不大，而且这一设定的存在让后面的操作有些问题，所以就取消了这一设定。
+
+  如果需要对Mesh的角度进行控制，则只需要对射线初始投射的方向进行约束就可以了。即将初始的角度换为物体自身欧拉角的z（即绕z轴旋转的度数）
+  作为初始角度。
+
+  将上述功能一一实现后，最终效果如下图所示：
+  ![](..\assets\img\Unity2D\fin.gif)  
+
+
+***
+## 完整代码
+  ```csharp
 //ORG: Ghostyii & MoonLight Game
 using UnityEngine;
 
@@ -240,4 +274,4 @@ public class PointLight2D : MonoBehaviour
   ```
 
 ### 使用方法
-  将该脚本挂载到场景中的任意一个空物体上即可预览效果，代码中的startAngle与endAngle变量还没有用到，我会继续研究该效果，来实现更多的功能。
+  将该脚本挂载到场景中的任意一个空物体上即可预览效果。
