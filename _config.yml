@@ -27,6 +27,7 @@ kramdown:
   syntax_highlighter: rouge
   syntax_highlighter_opts:
     coderay_line_numbers:  nil
+
 permalink: /:title/
 
 
@@ -51,6 +52,8 @@ links:
     url: /about
 # projects in header index
 projects:
+  - name: Light2D for Unity
+    url: https://github.com/GhostYii/Light2D
   - name: InventorySystem
     url: https://github.com/GhostYii/InventorySystem
   - name: MiniMinesweeper
