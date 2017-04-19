@@ -54,11 +54,15 @@ links:
 projects:
   - name: Light2D for Unity
     url: https://github.com/GhostYii/Light2D
+    lastupdate: 2017-04-17
   - name: InventorySystem
     url: https://github.com/GhostYii/InventorySystem
+    lastupdate: 2017-04-13
   - name: MiniMinesweeper
     url: https://github.com/GhostYii/MiniMinesweeper
+    lastupdate: 2017-03-19
   - name: Easy Gomoku
     url: https://github.com/GhostYii/Workshop-gomoku
+    lastupdate: 2017-03-14
 # exclude my node related stuff
 exclude: ['package.json', 'src', 'node_modules']
