@@ -42,8 +42,8 @@ compress_html:
 links:
   - title: 主页
     url: /
-  - title: 文章列表
-    url: /posts
+#  - title: 文章列表
+#    url: /posts
   - title: 归档
     url: /series
   - title: 标签
