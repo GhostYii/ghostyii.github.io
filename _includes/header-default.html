@@ -2,7 +2,7 @@
     <div class="content">
 
         <div class="person">
-            <img alt="My photo" src=assets//img//myphoto.png>
+            <img alt="My photo" src=//ghostyii.com//assets//img//myphoto.png>
         </div>
 
         <h1>
@@ -43,15 +43,42 @@
         </div>
 
         <ul class="recent">
-            <p>最近更新:</p>
-             {% for post in site.posts limit:6%}
+            <p >最近更新:</p>
+             {% for post in paginator.posts limit:10%}
                 <li>
                     <a title="" href="{{ post.url | prepend: site.baseurl }}">
                         <h2 class="post-title" itemprop="name">{{ post.title }} - {{post.date | date: "%Y-%m-%d"}}</h2>
                     </a>
                 </li>
               {% endfor %}
+              {% if paginator.total_pages > 1 %}
+              <div class="pagination">
+                {% if paginator.previous_page %}
+                  <a style="color:#fff" href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}">&laquo; 前一页</a>
+                {% else %}
+                  <span style="color:#2f2f33">&laquo;</span>
+                {% endif %}
+
+                {% for page in (1..paginator.total_pages) %}
+                  {% if page == paginator.page %}
+                    <span style="color:#2f2f33">{{ page }}</span>
+                  {% elsif page == 1 %}
+                    <a style="color:#fff" href="{{ '/index.html' | prepend: site.baseurl | replace: '//', '/' }}">{{ page }}</a>
+                  {% else %}
+                    <a style="color:#fff" href="{{ site.paginate_path | prepend: site.baseurl | replace: '//', '/' | replace: ':num', page }}">{{ page }}</a>
+                  {% endif %}
+                {% endfor %}
+
+                {% if paginator.next_page %}
+                  <a style="color:#fff" href="{{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }}">后一页 &raquo;</a>
+                {% else %}
+                  <span style="color:#2f2f33">&raquo;</span>
+                {% endif %}
+              </div>
+              {% endif %}
         </ul>
+<!--
+        <ul class="list-container"></ul>
 
         <ul class="recent">
             <p>最近开源项目:</p>
@@ -63,7 +90,7 @@
                 </li>
               {% endfor %}
         </ul>
-
+-->
     </div>
     {% include menu-search.html %}
 </header>
