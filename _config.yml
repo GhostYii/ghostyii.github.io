@@ -34,6 +34,7 @@ kramdown:
 
 permalink: /:title/
 
+hidetag: invisible
 
 # html minify
 compress_html:

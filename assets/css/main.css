@@ -1080,7 +1080,7 @@ html, body {
 }
 
 .post-item .content a {
-    text-transform: lowercase;
+    /*text-transform: lowercase;*/
     text-decoration: none;
     border: none;
 }

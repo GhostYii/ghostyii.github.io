@@ -2,7 +2,7 @@
     <div class="content">
 
         <div class="person">
-            <img alt="My photo" src=//ghostyii.com//assets//img//myphoto.png>
+            <img alt="My photo" src=..//assets//img//myphoto.png>
         </div>
 
         <h1>
@@ -44,11 +44,15 @@
 
         <ul class="recent">
             <p >最近更新:</p>
-             {% for post in paginator.posts limit:10%}
+             {% for post in paginator.posts limit:site.paginate %}
                 <li>
+                  {% if post.tags[0] == site.hidetag %}
+                    {% continue %}
+                  {% else %}
                     <a title="" href="{{ post.url | prepend: site.baseurl }}">
                         <h2 class="post-title" itemprop="name">{{ post.title }} - {{post.date | date: "%Y-%m-%d"}}</h2>
                     </a>
+                  {% endif %}
                 </li>
               {% endfor %}
               {% if paginator.total_pages > 1 %}
