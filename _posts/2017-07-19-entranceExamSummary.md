@@ -16,6 +16,7 @@ categories:
 ### 数据结构
 
 #### [0x01. 时间复杂度的计算 - 2017-07-18](../timecomplexity)
+#### [0x02. 线性表 LinearTable - 2017-07-20](../sequencelist)
 
 ### 计算机组成原理
 
