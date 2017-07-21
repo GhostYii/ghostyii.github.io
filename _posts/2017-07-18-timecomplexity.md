@@ -192,8 +192,11 @@ while((y+1)*(y+1)<n)
 2. 循环主体中的变量与循环条件无关  
 &nbsp;&nbsp;&nbsp;&nbsp; 采用数学归纳法或直接累计循环次数。  
 &nbsp;&nbsp;&nbsp;&nbsp; 多层循环由内往外分析，忽略单步语句、条件判断语句，主关注主体语句的执行次数。  
-&nbsp;&nbsp;&nbsp;&nbsp; 一般分为递归和非递归程序  
-&nbsp;&nbsp;&nbsp;&nbsp; 对于**递归程序**，一般用公式进行推导，如例3  
-&nbsp;&nbsp;&nbsp;&nbsp; 对于***非递归程序**，可以直接累计次数，如例6和例7   
+&nbsp;&nbsp;&nbsp;&nbsp; 一般分为递归和非递归程序。   
+&nbsp;&nbsp;&nbsp;&nbsp; 对于 **递归程序**，一般用公式进行推导，如例3。  
+&nbsp;&nbsp;&nbsp;&nbsp; 对于 **非递归程序**，可以直接累计次数，如例6和例7。   
 
 ---
+<center>  
+ <a href="../entranceExamSummary">返回目录</a>
+</center>
