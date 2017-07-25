@@ -95,9 +95,9 @@ bool DeleteRange(SeqList& seq, SeqData min, SeqData max)
 	   return false;
 
   //注意这里的for循环内没有执行任何语句
-  for (j=i; j<MAXSIZE && values[j]<=max; j++) ;
+  for (j=i; j<seq.length && values[j]<=max; j++) ;
 
-  for (; j<MAXSIZE; i++,j++)
+  for (; j<seq.length; i++,j++)
     values[i] = values[j];
 
   seq.length = i;
