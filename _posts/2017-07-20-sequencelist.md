@@ -300,6 +300,121 @@ int GetLength(LinkList &ll)
 	return len;
 }
 ```
+## 双链表
+单链表结点中只有一个指向其后继的指针，这使得单链表只能通过从前往后遍历的方式查找元素，如果要查找某个结点的前驱结点，只能从头开始遍历。访问前驱结点的时间复杂度为O(n)。  
+为了克服单链表的上述缺点。引入了双链表，双链表与单链表类似，只是在结点中新增了一个指向其前驱结点的指针。如下图所示：  
+![doublelinklist](../assets/img/EEImgs/doublelinklist.png)  
+
+双链表中结点类型描述如下：  
+```cpp
+typedef struct DNode
+{
+	SeqData data;
+	struct DNode *prev, *next;
+}DNode, *pDNode, *DLinklist;
+```
+
+### 双链表的插入、删除 
+```cpp
+typedef struct DNode
+{
+	int value;
+	struct DNode *prev, *next;
+}DNode, *pDNode, *DLinklist;
+
+DLinkList Insert(DLinkList dll, int pos, int value)
+{
+	pDNode tmp = dll->next;
+	int i = 1;
+
+	while (tmp)
+	{
+		if (pos-1 == i)
+		{
+			pDNode e;
+			e->value = value;
+			
+			e->next = tmp->next;	//1
+			tmp->next->prev = e;	//2
+			e->prev = tmp;			//3
+			tmp->next = e;			//4
+
+			return dll;
+		}
+
+		i++;
+		tmp = tmp->next;
+	}
+	
+	//插入失败，返回原始链表
+	return dll;
+}
+
+DLinkList Delete(DLinkList dll, int pos)
+{
+	pDNode tmp = dll->next;
+	int i = 1;
+
+	while (tmp)
+	{
+		if (pos-1 == i)
+		{
+			pDNode aim = tmp->next;
+			aim->next->prev = tmp;
+			tmp->next = aim->next;
+
+			delete aim;
+			return dll;
+		}
+
+		i++;
+		tmp = tmp->next;
+	}
+	
+	//删除失败，返回原始链表
+	return dll;
+}
+
+```
+上面的插入操作中指针移动如下图所示：  
+![doublelinklistinsert](../assets/img/EEImgs/doublelinklist2.png)
+
+值得注意的一点是，这个顺序不是固定的，但是一定保证①②两步在④之前，否则tmp->next就再也找不到了，导致插入失败。
+
+## 循环链表
+### 循环单链表
+循环单链表和单链表的区别在于表中的最后一个结点不是NULL，而改为指向头结点，从而使整个链表形成一个环。  
+循环单链表中一般不再存在单独的头指针，取而代之的是尾指针。所以链表的“头”是```尾指针->next```。这样使得对表尾的操作的时间复杂度O(1)而不是O(n)。  
+循环单链表的插入删除操作与单链表几乎一样，只是在处理表尾的情况时需要特殊处理以保证仍然是循环的。
+
+### 循环双链表
+双向循环链表和单循环链表很相似，唯一不一样的地方在循环双链表中头结点的prev指针指向表尾结点。  
+空表的头结点指针域为NULL。  
+
+## 静态链表
+静态链表是借助数组来描述线性表的**链式存储结构**，与前面的链表不同的一点是，这里的指针不是真正意义上的指针(*p)，而是结点的相对地址，也就是数组的下标。  
+静态链表需要预先分配一块连续的内存空间。  
+静态链表的结构类型描述如下：
+```cpp
+#define MAXSIZE 50
+
+typedef struct
+{
+	SeqData data;
+	int next;
+}SLinkList[MAXSIZE];
+```
+静态链表结束以```next==-1```作为结束的标志。
+
+---
+## 顺序表与链表的比较
+1. 存储结构不同，顺序表是随机存取，链表只能从表头顺序存取。
+2. 顺序表的逻辑相邻，物理结构也相邻。而链表则不一定，对应关系是通过指针实现的。
+3. 查找、删除和插入操作处理不同。按值查找，顺序表在无序情况下，两者的时间复杂度均为O(n)，但是当顺序表有序时，可采用折半查找，此时时间复杂度为O(log(2)n)。按序号查找，顺序表支持随机访问，时间复杂度为O(1)，而链表的平均时间复杂度为O(n)。
+4. 由于链表的每个结点都带有指针域，因此在存储空间上比顺序存储要付出更大的代价，存储密度不够大。
+5. 空间分配上，顺序表一旦装满就不能扩充，预先分配较大空间则会造成后部分的浪费。动态分配虽然可以解决这一问题，但是由于需要移动大量元素，导致操作效率过低。链表则可以在需要的时候申请分配，只要内存还有剩余空间即可分配，操作灵活高效。
+
+
 ---
 <center>  
  <a href="../entranceExamSummary">返回目录</a>
