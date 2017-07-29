@@ -34,7 +34,11 @@ kramdown:
 
 permalink: /:title/
 
+#Display filter
 hidetag: invisible
+
+#Google services
+google_analytics: UA-103564744-1
 
 # html minify
 compress_html:

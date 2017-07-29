@@ -1,5 +1,23 @@
 # Space Jekyll
 
+## 改动详细说明
+本工程对源工程的改动如下：
+
+- 修改了网站的色调，更改了绝大部分显示文字
+- 将菜单中的五个5项菜单更改为4项，将右侧菜单的4项修改为2项
+- 修改了部分css样式
+- 修改了文章列表的显示格式（从title修改为title - date）
+- 将首页的五个图标修改为四个（删除了推特、Google+、RSS订阅，新增了Bilibili和Steam）
+- 删除了文章页面的评论功能
+- 删除了文章页面的分享功能
+- 增加了CNAME文件并绑定了域名
+- 重写了关于界面（about.html）
+- 删除了Recent projects显示区域
+- 修改首页文章显示最多条目，增加了一个分页功能
+- 在所有文章显示界面增加了一个返回顶部按钮
+- 修改了文章显示列表的筛选方式
+- 添加了Google Analytics追踪服务
+
 A simple and elegant Jekyll theme based on Spacemacs. The theme works well on mobile devices as well.
 
 See a live demo [here](https://victorvoid.github.io/space-jekyll-template/).
