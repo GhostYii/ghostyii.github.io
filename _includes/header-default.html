@@ -43,7 +43,7 @@
         </div>
 
         <ul class="recent">
-            <p >最近更新:</p>
+            <p >文章列表:</p>
              {% for post in paginator.posts limit:site.paginate %}
                 <li>
                   {% if post.tags[0] == site.hidetag %}
