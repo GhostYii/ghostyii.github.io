@@ -13,6 +13,7 @@ categories:
 --- 
 [注] 本文带 * 的配图均来自  ***[数据结构(C语言版)].严蔚敏 吴伟民***
 ## 栈
+--- 
 ### 基本概念
 **栈(stack)**： 只允许在一端进行插入或删除操作的线性表。示意图（*）如下：  
 ![stack](../assets/img/EEImgs/stack.png)  
@@ -129,6 +130,7 @@ class SeqStack
 ```
 **[注]：考研中数据结构一般不会使用面向对象的语法，如类Class等，所以这里的SeqStack类仅供参考，重点在于基本操作（类中函数的实现），在考试中不要使用类去做题。**
 
+--- 
 ### 共享栈
 利用栈底位置相对不变的特性，可以让两个顺序栈共享一个一维数据空间，将两个栈的栈底分别设置在共享空间的两端，两个栈顶向共享空间的中间延伸，如下图所示：  
 ![share stack](../assets/img/EEImgs/sharestack.png)
@@ -136,4 +138,130 @@ class SeqStack
 两个栈的栈顶指针都指向栈顶元素，top0=-1时0号栈为空，top1=MAXSIZE时1号栈为空。仅当两个栈顶指针相邻（top1-top0=1）时，判断为栈满。当0号栈压栈时top0先+1再赋值，1号栈压栈时top1先-1再赋值。弹栈则刚好相反。  
 共享栈是为了更有效的利用存储空间，两个栈的空间相互调节，只有在整个存储空间被沾满时才发生上溢。其存取数据的时间复杂度为O(1)。
 
+共享栈的代码如下：
+```cpp
+#define MAXSIZE 2048 
+typedef struct
+{
+  int value;
+}StkData;
+
+typedef struct
+{
+  StkData data[MAXSIZE];
+  int ltop;
+  int rtop; 
+}SStack;
+
+class SStakeUtility
+{
+  public:
+    //初始化共享栈 
+    SStack Init()
+    {
+      SStack sstk;
+      sstk.data = new StkData[MAXSIZE];
+      sstk.ltop = -1;
+      sstk.rtop = MAXSIZE;
+      
+      return sstk;
+    }
+    //判左栈空 
+    bool IsLeftStackEmpty(SStack sstk)
+    {
+      return sstk.ltop == -1;
+    }
+    //判右栈空 
+    bool IsRightStackEmpty(SStack sstk)
+    {
+      return sstk.rtop == MAXSIZE;
+    }
+    //判栈满
+    bool IsFull(SStack sstk)
+    {
+      return sstk.rtop - sstk.ltop == 1;
+    } 
+    //清空共享栈
+    void Clear(SStack& sstk)
+    {
+      delete sstk.data;
+      sstk.ltop = -1;
+      sstk.rtop = MAXSIZE;
+    } 
+    
+    //左栈压栈
+    bool PushLeft(SStack& sstk, StkData e)
+    {
+      if (IsFull(sstk))
+          return false;
+          
+        sstk.data[++sstk.ltop] = e;
+        return true;
+      } 
+      //左栈弹栈
+    StkData PopLeft(SStack& sstk)
+    {
+      if (IsLeftStackEmpty(sstk))
+          return NULL;
+    
+            return sstk.data[sstk.ltop--];
+      } 
+      //取左栈栈顶元素而不弹栈
+    StkData GetLeftTop(SStack sstk)
+    {
+      if (IsLeftStackEmpty(sstk))
+          return NULL;
+    
+            return sstk.data[sstk.ltop];
+    } 
+    //清空左栈
+      void ClearLeft(SStack& sstk)
+      {
+        sstk.ltop = -1;
+    }
+      
+      //右栈压栈
+    bool PushRight(SStack& sstk, StkData e)
+    {
+      if (IsFull(sstk))
+          return false;
+          
+        sstk.data[--sstk.rtop] = e;
+        return true;
+      } 
+      //右栈弹栈
+    StkData PopRight(SStack& sstk)
+    {
+      if (IsLeftStackEmpty(sstk))
+          return NULL;
+    
+            return sstk.data[sstk.rtop++];
+      } 
+      //取右栈栈顶元素而不弹栈
+    StkData GetLeftTop(SStack sstk)
+    {
+      if (IsLeftStackEmpty(sstk))
+          return NULL;
+    
+            return sstk.data[sstk.rtop];
+    } 
+    //清空右栈
+    void ClearLeft(SStack& sstk)
+    {
+      sstk.rtop = MAXSIZE;
+    }
+};
+```
+
 --- 
+### 栈的链式存储结构 
+采用链式存储的栈称为链栈，链栈的优点是便于多个栈共享存储空间和提高效率，且不存在栈满上溢的情况。  
+通常链栈采用单链表实现，并规定所有操作都是在单链表的表头进行的。规定链栈没有头结点，只有栈顶指针。如下图所示：  
+![link stack](../assets/img/EEImgs/linkstack.png) 
+
+
+
+---  
+<center>  
+ <a href="../entranceExamSummary">返回目录</a>
+</center>
