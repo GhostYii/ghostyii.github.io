@@ -22,7 +22,7 @@ categories:
 **栈底(bottom)**：固定的，不允许进行插入和删除的一端。  
 **空栈**：不含任何元素的空表。  
 
-上图中a1为栈底元素，an为栈顶元素。进栈次序为： a1->a2->a3->...->an，而出栈次序为：a(n)->a(n-1)->a(n-2)->...->a1。由此可见，栈的一个明显操作特性为**后进先出(Last In First Out, LIFO)**，故又称先进后出的顺序表。  
+上图中a1为栈底元素，an为栈顶元素。进栈次序为： a1->a2->a3->...->an，而出栈次序为：a(n)->a(n-1)->a(n-2)->...->a1。由此可见，栈的一个明显操作特性为**后进先出(Last In First Out, LIFO)**，故又称后进先出的顺序表。  
 
 #### 基本操作
 以下基本操作应熟记：  
@@ -52,9 +52,9 @@ typedef struct
 栈顶元素： s.data[top]；  
 压栈操作：栈未满时，栈顶指针先+1，再存入值。  
 弹栈操作：栈非空时，先取栈顶元素值，再将栈顶指针-1。  
-判空：s.top = -1;
-判满：s.top == MAXSIZE-1；
-栈长：s.top+1；
+判空：s.top = -1;  
+判满：s.top == MAXSIZE-1；  
+栈长：s.top+1；  
 
 ![stack elements with top](../assets/img/EEImgs/stk_topandeles.png)  
 
@@ -259,7 +259,74 @@ class SStakeUtility
 通常链栈采用单链表实现，并规定所有操作都是在单链表的表头进行的。规定链栈没有头结点，只有栈顶指针。如下图所示：  
 ![link stack](../assets/img/EEImgs/linkstack.png) 
 
+--- 
+因为链栈的实现就是链表，只是在操作上有所不同，这里只给出链栈的基本操作代码，不对其进行详细讨论。  
+```cpp
+typedef struct 
+{
+  int value;
+}StkData;
 
+typedef struct StkNode
+{
+  StkData value;
+  struct StkNode *next;
+}StkNode, *pStkNode;
+
+class Stack : public
+{
+public:
+  //初始化
+  void Stack()
+  {
+    top = NULL;
+  }
+  //读取头结点
+  pStkNode GetTop()
+  {
+    pStkNode tmpHead = top;
+    return tmpHead;
+  }
+  //判空
+  bool IsEmpty()
+  {
+    return top == NULL;
+  }
+  //压栈
+  bool Push(StkData data)
+  {
+    pStkNode n = new pStkNode;
+    n->data = data;
+    n->next = top;
+    top = n;
+    return true;
+  }
+  //弹栈
+  pStkNode Pop()
+  {
+    if (IsEmpty())
+      return NULL;
+    
+    pStkNode tmp = top;
+    top = top->next;
+    return tmp;
+  }
+  //清空栈
+  void Clear()
+  {
+    while (top)
+    {
+      pStkNode tmp = top->next;
+      delete top;
+      top = tmp;
+    }
+    
+    top = NULL;
+  }
+private:
+  pStkNode top;
+}
+```
 
 ---  
 <center>  
