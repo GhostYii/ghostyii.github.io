@@ -327,6 +327,52 @@ private:
   pStkNode top;
 }
 ```
+--- 
+## 队列
+
+--- 
+### 定义
+队列（queue）简称队，也是一种操作受限的线性表，只允许在表的一端进行插入，另一端进行删除。在队列中插入元素称为入队，删除元素称为离队。操作特性是**先进先出（First In First Out，FIFO）**，故又称先进先出的线性表。示意图（*）如下：  
+![queue](../assets/img/EEImgs/queue.png)
+
+### 常见基本操作  
+```cpp
+Queue Init();                           //初始化一个空队列
+bool IsEmpty(Queue q);                  //判空
+void Enqueue(Queue& q, QueueData e);    //入队
+QueueData Dequeue(Queue& q);            //出队
+QueueData GetHead(Queue& q);            //获取对头元素而不出队
+```
+
+### 队列的顺序存储结构 
+队列的顺序实现是指分配一块连续的存储单元存放队列中的元素，并附有两个指针front和rear分别指示队头元素和队尾元素的位置。  
+
+队列的顺序存储类型可描述为：  
+```cpp
+#define MAXSIZE 1024
+
+typedef struct
+{
+  int value;
+}QueueData;
+
+typedef struct
+{
+  QueueData datas[MAXSIZE];
+  int front;
+  int rear;
+}SeqQueue;
+```
+初始条件（判空条件）：q.front == q.rear == 0;  
+入队条件：队不满时，先赋值再将队尾指针+1。  
+出队条件：队非空时，先移出元素再将队头指针-1。
+
+![queue oprations](../assets/img/EEImgs/queueopra.png)  
+
+> 注意：不能用q.rear == MAXSIZE来判断队列是否已满，因为如上图所示，第四种情况下，q.rear==MAXSIZE成立，但是队列中仅有一个元素，这时入队出现“上溢出”，但是不是真正的溢出。这是顺序队列的缺点。  
+
+### 循环队列 
+
 
 ---  
 <center>  
