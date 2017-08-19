@@ -12,7 +12,13 @@ categories:
 
 --- 
 [注] 本文带 * 的配图均来自  ***[数据结构(C语言版)].严蔚敏 吴伟民***
-## 栈
+
+> ### 快速导航
+> [栈](#stack)  
+> [队列](#queue)
+
+--- 
+<h2 id="stack">栈</h2>
 --- 
 ### 基本概念
 **栈(stack)**： 只允许在一端进行插入或删除操作的线性表。示意图（*）如下：  
@@ -328,7 +334,7 @@ private:
 }
 ```
 --- 
-## 队列
+<h2 id="queue">队列</h2>
 
 --- 
 ### 定义
@@ -341,7 +347,7 @@ Queue Init();                           //初始化一个空队列
 bool IsEmpty(Queue q);                  //判空
 void Enqueue(Queue& q, QueueData e);    //入队
 QueueData Dequeue(Queue& q);            //出队
-QueueData GetHead(Queue& q);            //获取对头元素而不出队
+QueueData GetHead(Queue& q);            //获取对首元素而不出队
 ```
 
 ### 队列的顺序存储结构 
@@ -372,7 +378,119 @@ typedef struct
 > 注意：不能用q.rear == MAXSIZE来判断队列是否已满，因为如上图所示，第四种情况下，q.rear==MAXSIZE成立，但是队列中仅有一个元素，这时入队出现“上溢出”，但是不是真正的溢出。这是顺序队列的缺点。  
 
 ### 循环队列 
+循环队列是将顺序队列臆造为一个环状空间，即把存储队列元素的表从逻辑上看成一个环。  
+当队首指针q.front==MAXSIZE-1后，再前进一个位置就自动到0，这可以利用除法取余运算来实现。  
 
+初始状态： q.front = q.rear = 0;   
+队首指针前进1： q.front = (q.front+1) % MAXSIZE;  
+队尾指针前进1： q.rear = (q.rear+1) % MAXISIZE;  
+队列长度： (q.rear + MAXSIZE - q.front) % MAXSIZE;  
+入队出队时：指针都按照顺时针方向前进1。
+
+循环队列的示意图（*）如下：
+![loop queue](../assets/img/EEImgs/loopqueue.png)
+
+循环队列的队空和队满的判断条件：  
+队空：q.front == q.rear。但是，如果元素的入队速度大于出队速度，队尾指针很快赶上了队首指针，此时可以看出队满时也有q.front == q.rear。如下图（*）所示：  
+![loop queue empty or full](../assets/img/EEImgs/loopqueuefull.png)
+为了区分队空还是队满的情况，有三种处理方式：  
+1. 牺牲一个单元来区分队空和队满，入队时少用一个队列单元，这是一种较为普遍的做法。约定以“队头指针在队尾指针的下一个位置作为队满的标志”，即```q.front = (q.rear+1) % MAXSIZE```时为队满，```q.front==q.rear```为队空。此时队列长度为```q.rear - q.front + MAXSIZE) % MAXSIZE```。
+2. 类型中增设标识元素个数的数据成员，这样，队空条件为```q.size == 0```，队满条件为```q.size == MAXSIZE```。这两种情况都会出现q.front == q.rear。
+3. 类型中增设tag数据成员，以区分是队满还是队空，tag等于0的情况下，若因删除导致q.front==q.rear为队空，tag等于1的情况下，若因插入导致q.front==q.rear为队满。
+
+### 循环队列的操作
+```cpp
+#define MAXSIZE 1024
+
+typedef struct
+{
+  int value;
+}QueueData;
+
+typedef struct
+{
+  QueueData datas[MAXSIZE];
+  int front;
+  int rear;
+}SeqQueue;
+
+class SeqLoopQueue
+{
+public:
+  //使用构造函数对循环队列进行初始化 
+  SeqLoopQueue()
+  {
+    q.front = q.rear = 0;
+  }
+  //判空 
+  bool IsEmpty()
+  {
+    return q.front == q.rear;
+  }
+  //判满
+  bool IsFull()
+  {
+    return !((q.rear+1) % MAXSIZE == q.front);
+  } 
+  //入队 
+  void EnQueue(QueueData e)
+  {
+    if (IsFull())
+      return ;
+
+    q.datas[q.rear] = e;
+    //队尾指针+1取模 
+    q.rear = (q.rear+1) % MAXSIZE;
+  }
+  //出队 
+  QueueData DeQueue()
+  {
+    if (IsEmpty())
+      return ;
+
+    QueueData e = q.datas[q.front];
+    //队头指针+1取模 
+    q.front = (q.front+1) % MAXSIZE;
+
+    return e;
+  }
+  //获取队首元素而不出队
+  QueueData GetHead()
+  {
+    if (IsEmpty())
+      return NULL;
+
+    return q.front;   
+  } 
+private:
+  SeqQueue q;
+};
+ 
+```
+
+### 队列的链式存储结构
+队列的链式表示称为链队列，它实际上是一个同时带有队头指针和队尾指针的单链表。头指针指向队头结点，尾指针指向队尾结点，即单链表的最后一个结点。链队列的示意图（*）如下：  
+![linkqueue](../assets/img/EEImgs/linkqueue.png)
+
+队列的链式存储类型可描述为  
+```cpp
+typedef struct
+{
+  int value;
+}QueueData;
+
+typedef struct
+{
+  QueueData data;
+  struct LinkNode *next;
+}LinkQueueNode, *pLinkQueueNode;
+
+typedef struct
+{
+  pLinkQueueNode front;
+  pLinkQueueNode rear;
+}LinkQueue, *pLinkQueue;
+```
 
 ---  
 <center>  

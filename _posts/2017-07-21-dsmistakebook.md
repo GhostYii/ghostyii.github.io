@@ -57,23 +57,23 @@ void DeletRange(SeqData& seq, SeqData min, SeqData max)
 	int len = seq.GetLength();
 	int start = -1;
 	for (;start<len;start++)
-		if (seq.data[start++] > min)
-		   break;
+	if (seq.data[start++] > min)
+		break;
 
-    if (start < 0)
-    {
-    	puts("Error Info: Min-value is too large!");
-    	//exit(-1);
+	if (start < 0)
+	{
+		puts("Error Info: Min-value is too large!");
+		//exit(-1);
 		return ;
 	}
 
 	int end = start;
 	for (; end<len; end++)
 		if (seq.data[end] > max)
-		   break;
+			break;
 
-    if (end == len)
-    {
+	if (end == len)
+	{
 		seq.Clear();
 		return ;
 	}
@@ -91,22 +91,22 @@ bool DeleteRange(SeqList& seq, SeqData min, SeqData max)
 {
 	int i,j;
 	if (min >= max || seq.length == 0)
-	   return false;
+		return false;
 
-  //注意这里的for循环内没有执行任何语句
-  for (i=0; i<seq.length && seq.data[i]<min; i++) ;
+	//注意这里的for循环内没有执行任何语句
+	for (i=0; i<seq.length && seq.data[i]<min; i++) ;
 
 	if (i >= seq.length)
-	   return false;
+		return false;
 
-  //注意这里的for循环内没有执行任何语句
-  for (j=i; j<seq.length && values[j]<=max; j++) ;
+	//注意这里的for循环内没有执行任何语句
+	for (j=i; j<seq.length && values[j]<=max; j++) ;
 
-  for (; j<seq.length; i++,j++)
-    values[i] = values[j];
+	for (; j<seq.length; i++,j++)
+		values[i] = values[j];
 
-  seq.length = i;
-  return true;
+	seq.length = i;
+	return true;
 }
 ```
 
@@ -179,9 +179,11 @@ int Majority(int A[], int n)
 	int i,c,count=1;						//c用来保存候选主元素，count用来计数
 	c=A[0];									//设置A[0]为主元素
 	for (i=1; i<n; i++)						//查找候选主元素
+	{
 		if (A[i] == c)
 			count++;						//对A中的候选主元素计数
 		else
+		{
 			if (count > 0)					//处理不是候选主元素的情况
 				count--;
 			else							//更换候选主元素，重新计数
@@ -189,6 +191,9 @@ int Majority(int A[], int n)
 				c = A[i];
 				count = 1;
 			}
+		}
+	}
+		
 	if (count > 0)
 		for (i=count=0; i<n; i++)			//统计候选主元素出现的实际个数
 			if (A[i] == c)
