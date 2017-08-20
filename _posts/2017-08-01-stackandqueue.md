@@ -15,7 +15,8 @@ categories:
 
 > ### 快速导航
 > [栈](#stack)  
-> [队列](#queue)
+> [队列](#queue)  
+> [总结](#summary)
 
 --- 
 <h2 id="stack">栈</h2>
@@ -491,6 +492,111 @@ typedef struct
   pLinkQueueNode rear;
 }LinkQueue, *pLinkQueue;
 ```
+很明显，当```q.front==NULL && q.rear==NULL```时，链式队列为空。  
+出队时，首先判空，如不空，先取出队首元素，然后将该元素从队列中删除，将下一个结点指定为新的队首元素。当然，如果队列中只有一个元素，取完后队列为空，队首元素和队尾元素全为NULL。  
+可以看出，如果链队没有头结点，在操作上会比较麻烦。为了同意插入和删除操作，通常将链队设置为一个带头结点的单链表。  
+用单链表表示的链队特别适合于数据元素变动比较大的情形，而且不存在队列满且产生溢出的问题，此外，如果程序中需要使用多个队列，如同多个栈的情况一样，最好使用链队，就不会出现存储分配不合理和“溢出”的问题。  
+
+### 链式队列的基本操作
+```cpp
+typedef struct
+{
+  int value;
+}QueueData;
+
+typedef struct
+{
+  QueueData data;
+  struct LinkNode *next;
+}LinkQueueNode, *pLinkQueueNode;
+
+class SeqLinkQueue
+{
+public:
+  //使用构造函数来初始化队列 
+  SeqLinkQueue()
+  {
+    //cpp
+    front = new pLinkQueueNode;
+    //c
+    //front = (pLinkQueueNode)malloc(sizeof(LinkQueueNode));		
+    front->next = rear = nullptr;
+  }
+  //判空 
+  bool IsEmpty()
+  {
+    return front == rear;
+  }
+  //入队 
+  void Enqueue(QueueData e)
+  {
+    //cpp
+    pLinkQueueNode node = new pLinkQueueNode;
+    //c
+    //pLinkQueueNode = (pLinkQueueNode)malloc(sizeof(LinkQueueNode));
+    node->data = e;		//赋值 
+    node->next = NULL;	//将最后元素的后继元素置为空 
+    rear->next = node;	//更新之前的队尾元素后继元素 
+    rear = node;		//更新队尾元素 
+  }
+  QueueData Dequeue()
+  {
+    //队列为空直接返回NULL 
+    if (IsEmpty())
+      return NULL;
+
+    //获取队首元素 
+    pLinkQueueNode head = front->next;
+    QueueData result = head->data;
+    //更新队首元素 
+    front->next = head->next;
+    //如果队列中只有一个结点，更新完后首尾均为头结点 
+    if (rear == head)
+      rear = front;
+
+    //cpp
+    delete head; 
+    //c
+    //free(head);		
+
+    return result;
+  }
+  //获取队首元素而不出队 
+  QueueData GetHead()
+  {
+    if (IsEmpty())
+      return NULL;
+
+    pLinkQueueNode head = front->next;
+    return head->data;
+  }
+
+private:
+  pLinkQueueNode front;
+  pLinkQueueNode rear;
+}
+
+```
+
+### 双端队列
+#### 标准双端队列
+双端队列是指允许两段进行入队和出队操作的操作，如下图（*）所示：  
+![double queue](../assets/img/EEImgs/doublequeue.png)  
+双端队列的入队：前端（上图端1）进的元素排列在队列中后端（上图端2）进的元素的前面，后端进的元素排列在前端进的元素的后面。  
+双端队列的出队：无论前端还是后端出队，先出的元素排列在后出的元素的前面。  
+
+#### 输出受限的双端队列
+只允许在一段进行插入和删除，另一端只允许插入的双端队列称为输出受限的双端队列。
+#### 输入受限的双端队列
+只允许在一段进行插入和删除，另一端只允许删除的双端队列称为输入受限的双端队列。  
+#### “输入输出都受限的双端队列？”
+如果限定双端队列从某个端点插入的元素只能从该端点删除，则该双端队列其实就是两个栈底相邻接的栈了。  
+
+**对于一个双端队列来说，如果是从某一端进仍然要求从某一端出，则可以将该操作视为栈。如果从某一端进，从另一端出，则视为普通队列即可。**
+
+<h2 id="summary">总结</h2>
+栈和队列在本质上来说都属于线性表的推广，在考研中，属于每年必考的内容。也很容易出现在算法设计题中，但是，单纯考察栈和队列的操作，基本属于选择题，题目不算难。  
+我们应该扎实学好栈和队列的相关内容并深入理解，便于我们在算法设计题中能够快速运用找到解题思路。
 
 ---  
 <center>  
