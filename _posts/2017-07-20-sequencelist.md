@@ -304,8 +304,8 @@ int GetLength(LinkList &ll)
 --- 
 ## 双链表
 单链表结点中只有一个指向其后继的指针，这使得单链表只能通过从前往后遍历的方式查找元素，如果要查找某个结点的前驱结点，只能从头开始遍历。访问前驱结点的时间复杂度为O(n)。  
-为了克服单链表的上述缺点。引入了双链表，双链表与单链表类似，只是在结点中新增了一个指向其前驱结点的指针。如下图所示：  
-![doublelinklist](../assets/img/EEImgs/doublelinklist.png)  
+为了克服单链表的上述缺点。引入了双链表，双链表与单链表类似，只是在结点中新增了一个指向其前驱结点的指针。如下图所示：   
+![doublelinklist](../assets/img/EEImgs/doublelinklist.PNG)  
 
 双链表中结点类型描述如下：  
 ```cpp
@@ -379,7 +379,7 @@ DLinkList Delete(DLinkList dll, int pos)
 
 ```
 上面的插入操作中指针移动如下图所示：  
-![doublelinklistinsert](../assets/img/EEImgs/doublelinklist2.png)
+![doublelinklistinsert](../assets/img/EEImgs/doublelinklist2.PNG)
 
 值得注意的一点是，这个顺序不是固定的，但是一定保证①②两步在④之前，否则tmp->next就再也找不到了，导致插入失败。
 
