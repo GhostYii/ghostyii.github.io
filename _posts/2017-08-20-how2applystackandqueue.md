@@ -19,6 +19,7 @@ categories:
 > [3. 栈在递归中的应用](#recursive)  
 > [4. 队列在层次遍历中的应用](#layer)  
 > [5. 随机事件模拟](#randomeventremote)
+
 --- 
 <h3 id="brackets"> 栈在括号匹配中的应用</h3>
 假设表达式中允许包含两种括号：圆括号和方括号，其嵌套的顺序任意，即( [ ] ( ))或[([][])]等均为正确的格式，[(])或([()或者(()]均为不正确的格式。  
@@ -383,5 +384,164 @@ void foreachDoubleTree(DTree t)
 1. 根结点入队。
 2. 若队空，则结束遍历；否则重复3操作。
 3. 队列中的第一个结点出队并访问，若其有左孩子，则将左孩子入队；若其有右孩子，则将右孩子入队，返回2操作。
+
+--- 
+<h3 id="randomeventremote">离散事件模拟</h3>
+
+这里通过一个银行业务模拟来介绍离散事件的模拟。  
+假设某银行有4个窗口对外接待客户，从早晨银行开门起不断有客户进入银行。由于每个窗口在某个时刻只能接待一个客户，因此在客户人数众多时需在每个窗口之前顺次排队，对于刚进入银行的客户，如果某个窗口的业务员正空闲，则可上前办理业务，反之，若4个窗口均有客户，便会排在人数最少的队伍后面。现在需要编制一个程序以模拟银行的这种业务活动并计算一天中客户在银行逗留的平均时间。  
+为了计算这个平均时间，需要记录客户到达银行和离开银行的时间，所有客户逗留时间的总和被一天内进入银行的客户数除便是所求的平均时间。  
+称客户到达银行和离开银行这两个时刻发生的事情为**事件**，则整个程序将事件发生的先后顺序进行处理，这样一种模拟程序称为**事件驱动模拟**。  
+下面的代码正是这个事件的简单模拟程序：
+```c
+void BankSimulation(int closeTime)
+{
+    //初始化
+    OpenForDay();
+    while(moreEvent)
+    {
+        //事件驱动
+        EventDrived(occurTime, eventType);
+        //处理事件
+        switch(eventType)
+        {
+            case "Arrived":
+                CustomerArrived();
+            break;
+            case "Departure":
+                CustomerDeparture();
+            break;
+        }
+    }
+    //计算平均逗留时间
+    CloseForDay();
+}
+```
+
+下面讨论模拟程序的详细实现，首先要讨论模拟程序中所需要的数据结构及其操作。  
+这个程序中主要处理的是“事件”，事件的主要信息是事件类型和事件发生的时间。算法中处理的事件有两类：一类是客户到达事件，一类是客户离开事件。  
+前一类事件发生时刻随客户到来后自然形成，后一类事件发生时刻则由客户事务所需要的时间和等待时间而定。由于程序驱动是按事件发生时刻的先后顺序进行，则时间表应该是有序表，其主要操作是插入和删除。  
+另一种数据结构是表示客户排队的队列，由于前面假设银行有4个窗口，因此程序中需要4个队列，队列中有关客户的主要信息是客户到达的时刻和客户办理事务所需要的时间。每个队列中的队头为正在办理事务的客户，他办理完事务离开队列的时刻就是即将发生的客户离开事件的时刻，这就是说，对每个队头客户都存在一个将要驱动的客户离开事件。因此，在任何时刻即将发生的事件只有以下5种可能：  
+1. 新客户到达；
+2. 1号窗口客户离开；
+3. 2号窗口客户离开；
+4. 3号窗口客户离开；
+5. 4号窗口客户离开。
+
+所以，这个模拟程序中只需要两种数据类型：有序链表和队列。数据元素类型分别定义如下：  
+```c
+typedef struct
+{
+    int occurTime;  //发生时刻
+    int type;       //事件类型0代表到达，1-4代表1-4号窗口离开
+}Event, EventNode, *pEventNode;
+
+//事件链表类型，定义为有序链表
+typedef LinkList EventList
+
+typedef struct
+{
+    int arrivalTime;    //到达时刻
+    int duration;       //办理业务持续时间
+}QueueNode, *pQueueNode;
+```
+程序中使用随机数来模拟客户到达时间，假设第一个客户进门的时刻是0，即是模拟程序处理的第一个事件，之后每个客户到达的时刻在前一个客户到达时判定。因此在客户到达事件发生时需产生两个随机数，其一为到达客户办理事务所需时间duration，其二为下一客户到达时间间隔interTime，假设当前事件发生的时刻为occurTime，则下一个客户到达事件发生的时刻为occurTime+interTime。由此应产生一个新的客户到达事件插入事件表，刚到达的客户则应插入到当前所含元素最少的队列中，若该队列在插入前为空，则还应产生一个客户离开事件插入事件表。  
+客户离开事件的处理比较简单，首先计算该客户在银行的逗留时间，然后从队列中删除该客户后查看队列是否为空，若不为空则设定一个新的队头客户离开事件。  
+完整的示例代码如下：
+```c
+#define WINDOWCOUNT 4
+
+EventList ev;   //事件表
+Event en;       //事件
+LinkQueue q[WINDOWCOUNT];   //客户队列
+QueueNode customer;         //客户记录
+int totalTime, customerNum; //累计客户逗留时间，客户数
+
+int Cmp(Event a, Event b)
+{
+    int tmp = a.occurTime - b.occurTime;
+    if (tmp > 0)
+        return 1;
+    else if (tmp < 0)
+        return -1;
+    else
+        return 0;
+}
+
+void OpenForDay()
+{
+    totalTime = 0;
+    customerNum = 0;
+    InitList(ev);
+    
+    en.occurTime = 0;
+    en.type = 0;
+    
+    OrderInsert(ev, en, Cmp);
+
+    for (int i = 0;i < WINDOWCOUNT; i++)
+        InitQueue(q[i]);
+}
+
+void CustomerArrived()
+{
+    ++customerNum;
+    int d, it;
+    int &durTime = d, &interTime = it;
+
+    Random(durTime, interTime);
+    int t = en.occurTime + interTime;
+
+    if (t < closeTime)
+        OrderInsert(ev, new Event(t,0), (*Cmp)());
+    
+    int i = Minimum(q);
+    q[i].enqueue(en.occurTime, duration);
+
+    if (q[i].length == 1)
+        OrderInsert(ev, new Event(en.occurTime+durTime, i), (*Cmp)());
+}
+
+void CustomerDeparture()
+{
+    int i = en.type;
+    customer = q[i].dequeue();
+
+    totalTime += en.occurTime - customer.arrivalTime;
+
+    if (!q[i].IsEmpty())
+    {
+        customer = q[i].GetHead();
+        OrderInsert(ev, new Event(en.occurTime + customer.duration, i), (*Cmp)());
+    }
+}
+void CloseForDay()
+{
+    printf("The average time is %f\n", (float)totalTime/customerNum);
+}
+
+void BankSimulation(int closeTime)
+{
+    //初始化
+    OpenForDay();
+
+    while(!ev.IsEmpty())
+    {
+        Event e, &p = e;
+        ev.Delete(ev.head, p);
+        en = GetCurrentEvent(p);
+
+        if (en.type == 0)
+            CustomerArrived();
+        else
+            CustomerDeparture();
+    }
+
+    CloseForDay();
+}
+
+```
+
+
 
 ---
