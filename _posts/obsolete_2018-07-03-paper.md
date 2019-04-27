@@ -394,9 +394,7 @@ if (Physics.Raycast(rayOrigin, GetCastDirection(), out hit, castDeepth, 1
 2.  不同武器产生不同弹痕
 
 ![](..\assets\img\papermedia/0b1b2c3a0887f892927fbcea55540822.jpg)
-
 ![](..\assets\img\papermedia/399259ac465846f170e07e198976b57b.png)
-
 ![](..\assets\img\papermedia/3349e0869d3faf5340d1b2f3dfc9cd13.png)
 
 图3.14 不同武器产生的不同弹痕贴图
@@ -495,7 +493,6 @@ K》中，武器的弹道设定是属于固定弹道。固定弹道的特点是�
 K》中定义了两个结构体GunValues和GunProperties。GunValues结构体定义了枪械的基本数值，如是否属于全自动武器、射击速率、伤害量、弹夹容量、换弹速度等。GunProperties结构体则定义了枪械的各种属性。其中包括了弹道系统的核心属性偏移曲线。
 
 ![](..\assets\img\papermedia/d7b12b6af7b06655eda57ace24bb4dd0.png)
-
 ![](..\assets\img\papermedia/93d03a46782169c1960af51909613f3e.png)
 
 ![](..\assets\img\papermedia/263fc209d0ca1650dec0d6101c93b175.png)
@@ -718,9 +715,7 @@ M16突击步枪射速较慢，但是单发伤害较高，可以连发，每个�
 游戏中所有武器均没有爆头双倍伤害效果。
 
 ![](..\assets\img\papermedia/ace6d843aa0ba22a4f593e95a943bd2e.jpg)
-
 ![](..\assets\img\papermedia/1a8c9b23a27b3516b1a1f4ece60eeb8c.jpg)
-
 ![](..\assets\img\papermedia/48dab408964fea1958a53b2a8aade362.jpg)
 
 图4.7 游戏中的不同武器
