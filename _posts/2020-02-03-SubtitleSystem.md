@@ -14,6 +14,7 @@ categories:
 ## 引言
 游戏内的字幕对于玩家而言是一个非常有用的辅助功能，同时对一些特殊群体的玩家来说是一个必不可少的功能。也就是说在游戏内拥有字幕功能是一个非常重要且基础的事情。本文将介绍一个在Unity中借助UGUI与DOTween实现的字幕系统。同时，本文所介绍的字幕系统将在Github开源，点击<a href="https://github.com/GhostYii/SubtitleSystem_Demo" target="_blank">此处</a>查看开源地址。
 
+---
 ## Subtitle System介绍
 SubtitleSystem是一个便于在游戏内添加字幕以及拓展的Unity开源项目，目前(2020.02.02)已经开发完成第一个版本，其主要功能包括：  
 - 创建SubtitleAsset资源以持久化存储字幕
@@ -23,6 +24,7 @@ SubtitleSystem是一个便于在游戏内添加字幕以及拓展的Unity开源�
 - 使用SubtitleSequence以实现字定义字幕序列
 - 使用Subtitle以拓展字幕显示形式
 
+---
 ## Subtitle Asset资源的设置
 如果需要实现对游戏内的过场CG或者视频添加字幕文件，可以通过SubtitleAsset来对字幕进行管理与播放。**SubtitleAsset**是SubtitleSystem内自定义的一个ScriptableObject资源，可以方便的进行保存与修改，同时，该系统编写了一个专门用于编辑SubtitleAsset的编辑器界面可用于查看与编辑字幕。  
 创建SubtitleAsset的过程与创建其他类型的资源类似，可以通过在*Asset窗口右键-Create-Subtitle Asset*实现，如下图所示：  
@@ -56,12 +58,13 @@ SubtitleAsset CreateAsset()
     return sa;
 }
 ```
+---
 ## Subtitle Asset Player使用
 当SubtitleAsset设置完成后，可以使用SubtitleAssetPlayer脚本来实现播放功能，其使用方法非常简单，**首先在场景中任意物体上挂载一个SubtitleManager脚本并且指定一个CanvasPrefab**，这一步是使用SubtitleSystem的必要条件，在本文所介绍的字幕系统中，所有所有播放操作都需要用到SubtitleManager脚本，**故在进行操作前务必先指定SubtitleManager**。之后在场景任意物体上挂载一个SubtitleAssetPlayer脚本即可。  
 该脚本主要需要指定一个SubtitleAsst资源以实现播放，用户可以指定该Asset播放的Text组件，如果Text未指定则会在运行时创建一个动态的Text。同时在该脚本的Inspector面板存在三个控制按钮，分别是Play、Pause、Stop按钮以方便对SubtitleAsset资源的进度控制。在这三个按钮的下方是简易监视面板，此面板在设置完成后，在运行时可以监视当前播放的字幕信息与进度，具体效果如下图所示：
 ![subtitle asset player](../assets/img/SubtitleSystem/assetplayer.gif)
 
-
+---
 ## Subtitle Manager使用
 在上文中已经提到SubtitleManager组件是整个字幕系统正确运行的必要条件，该脚本是一个单例脚本，在工程任意位置中可以使用`SubtitleManager.Instance`来获取本脚本的实例，该组件中存在一部分控制代码，其中比较重要的一些公共方法如下：
 ```csharp
@@ -99,6 +102,7 @@ public Subtitle ShowWithCustom(string content, Vector3 position, int fontSize, C
 SubtitleManager.Instance.ShowWithCustom("自定义效果字幕，字体颜色渐变为红色", Vector3.zero, 30, Color.white, 2f, (t, d) => t.DOColor(Color.red, 3f));
 ```
 
+---
 ## Subtitle Sequence使用
 除了使用SubtitleAsset资源进行固定序列字幕之外，SubtitleSystem也支持使用代码动态生成序列进行播放，在代码中使用到的类为SubtitleSequence，此序列用法类似于DOTween中的Sequence，其主要API如下：
 ```csharp
@@ -136,6 +140,7 @@ sequence.Play();
 ```
 值得注意的一点是使用SubtitleManager.Instance产生的内置效果字幕默认状态下会在创建后立即播放，如果需要加入Sequence统一管理，则需要将最后一个参数设置为false，如果使用的是Subtitle的构造函数则不需要进行设置。
 
+---
 ## 其他API
 ```csharp
 SubtitleUtility.cs
@@ -151,10 +156,12 @@ public static void StartCoroutine(IEnumerator routine, string routineTag);
 public static void StopAllCoroutines(string coroutineTag);
 ```
 
+---
 ## 特别感谢
 本系统开发过程中使用了以下开源/免费项目：
 1. <a href="http://dotween.demigiant.com/" target="_blank">DOTween</a>
 2. <a href="https://github.com/aaubry/YamlDotNet" target="_blank">YamlDotNet</a>
 
+---
 ## 下载
-1. [SubtitleSystem_V1.0 with DOTween_v1.1.575 (Unity2019.3.0f6).unitypackage](../assets/downloadable/SubtitleSystem_Unity2019.3.0f6.unitypackage)
+1. [SubtitleSystem_V1.0 with DOTween_v1.1.575 (Unity2019.3.0f6).unitypackage](../assets/downloadable/SubtitleSystem_Unity2019.3.0f6.unitypackage)  
