@@ -24,6 +24,8 @@ SubtitleSystem是一个便于在游戏内添加字幕以及拓展的Unity开源�
 - 使用SubtitleSequence以实现字定义字幕序列
 - 使用Subtitle以拓展字幕显示形式
 
+V1.0使用Unity2018.3.0f2创建，在Unity2019.3.0f6上测试运行正常，理论上可运行于DoTween所支持的所有Unity版本上。
+
 ---
 ## Subtitle Asset资源的设置
 如果需要实现对游戏内的过场CG或者视频添加字幕文件，可以通过SubtitleAsset来对字幕进行管理与播放。**SubtitleAsset**是SubtitleSystem内自定义的一个ScriptableObject资源，可以方便的进行保存与修改，同时，该系统编写了一个专门用于编辑SubtitleAsset的编辑器界面可用于查看与编辑字幕。  
@@ -32,14 +34,14 @@ SubtitleSystem是一个便于在游戏内添加字幕以及拓展的Unity开源�
 也可以通过Unity顶部的Asset选项卡创建，*Asset-Create-Subtitle Asset*，如下图所示：  
 ![create asset by menu](../assets/img/SubtitleSystem/createasset1.png)  
 创建完成后Unity将生成一个Asset文件，选择该文件将显示该字幕文件的简要信息，
-![brief info](../assets/img/SubtitleSystem/subtitleinspector.png)
+![brief info](../assets/img/SubtitleSystem/subtitleinspector.png)  
 在此界面，可以选择“从文件导入”、“导出到文件”、“打开编辑器”三项操作，其中导入导出均对.sa文件进行操作，打开编辑器可以查看本文件的详细字幕内容。编辑器分为四个部分，如下图所示
-![asset editor](../assets/img/SubtitleSystem/asseteditor.png)
+![asset editor](../assets/img/SubtitleSystem/asseteditor.png)  
 其中红色部分代表本字幕文件一些说明信息，包括Version与Info两个字段，黄色部分代表本字幕文件所需要的所有格式信息，蓝色部分代表所有字幕内容。底部功能按钮区可以对本文件进行导入导出操作。值得注意的一点是，**在Formats(黄色区域)内的Font字段所选择的字体，应该全部存放在Resources/Font文件夹下**，否则SubtitleSystem将无法正确寻找到对应的字体而报错。Formats区域所选择的格式操作基本是属于UnityEngine.UI.Text组件的属性。  
 Subtitles区域则是整个字幕文件的主要区域，其每个字幕item的前两个属性用于选择应用于此条字幕的格式，如果选择FormatIndex，则使用Index寻找格式，格式的Index在格式名称后使用“**[]**”标注，如果选择FormatCode，则会去寻找Formats区域内第一个Code匹配的格式。同一条字幕只能对应一种格式。Position字段标明该条字幕显示在屏幕上的位置，其对应Text组件的rectTransform.localPosition属性。Content标明字幕内容，Duration标明此条字幕的持续时间。  
 其中Subtitles区域内的导入导出功能仅对此区域有效，导入可选择.txt格式或者该系统定义的.subs格式，导出仅可导出.subs格式，其中.txt格式会将txt文件内的每一行当作一条字幕导入，其余属性将使用默认属性，如果需要自定义属性，可以通过以下格式定义：
 ```
-"content"|"FormatIndex"|"FormatCode"|"Duration"|"(position.x, position.y)"
+"content"|"FormatIndex"|"FormatCode"|"Duration"|"FadeInDuration"|"FadeOutDuration"|"IsVertical"|"(position.x, position.y)"
 ```
 其中每个字段使用两个**"**符号包括，在**"**内部可以继续使用**"**符号不会影响导入，每个字段之间使用**|**符号隔开，其中字段顺序如上所述。如果选择FormatIndex来确定格式，则FormatCode保持为空，反之则FormatIndex保持为-1。  
 值得注意的是，如果游戏内的格式几乎完全一致，那么可以通过保存一个只存有格式的.sa文件（通过Subtitle Asset Editor的Save to (SA)file功能）与不同的.subs（通过Subtitle Asset Editor内Subtitles区域的Save subtitles to file功能或者按照上述格式手动创建）来动态创建SubtitleAsset，在代码中可以使用以下代码实现。
@@ -91,8 +93,9 @@ public Subtitle ShowWithShakeScale(string content, Vector3 position, int fontSiz
 public Subtitle ShowWithTypewriter(string content, Vector3 position, int fontSize, Color color, float duration, float interval, string fontName = "Arial", bool playOnCreate = true);
 
 //显示自定义效果字幕
-//onShow(Text text, float currentProgress)
-public Subtitle ShowWithCustom(string content, Vector3 position, int fontSize, Color color, float duration, Action<Text, float> onShow, Action onComplete, string fontName = "Arial", bool playOnCreate = true);
+//onPlay(Text text, float duration)
+//onUpdate(Text text, float currentProgress)
+public Subtitle ShowWithCustom(string content, Vector3 position, int fontSize, Color color, float duration,Action<Text, float> onPlay, Action<Text, float> onUpdate, Action onComplete, string fontName = "Arial", bool playOnCreate = true);
 ```
 其各个效果预览如下：
 ![subtitle demo](../assets/img/SubtitleSystem/subtitledemo.gif)
@@ -133,12 +136,62 @@ sequence.Append(SubtitleManager.Instance.ShowWithShakePosition("位置震动字�
 sequence.Append(SubtitleManager.Instance.ShowWithShakeRotation("旋转震动字幕", Vector3.zero, 30, Color.white, 2f, 90f, true, "Arial", false));
 sequence.Append(SubtitleManager.Instance.ShowWithShakeScale("缩放震动字幕", Vector3.zero, 30, Color.white, 2f, 5f, true, "Arial", false));
 sequence.Append(SubtitleManager.Instance.ShowWithTypewriter("打字机效果预览字幕", Vector3.zero, 30, Color.white, 2f, 0.1f, "Arial", false));
-sequence.Append(SubtitleManager.Instance.ShowWithCustom("自定义效果字幕，字体颜色渐变为红色", Vector3.zero, 30, Color.white, 2f, (t, d) => t.DOColor(Color.red, 3f), null, "Arial", false));
+sequence.Append(SubtitleManager.Instance.ShowWithCustom("自定义效果字幕，字体颜色渐变为红色", Vector3.zero, 30, Color.white, 2f, (t, d) => t.DOColor(Color.red, 2f), null, null, "Arial", false));
 sequence.Append(new Subtitle("常驻字幕，永不消失", Vector3.zero, 30, Color.white, "Arial", 0));    
 
 sequence.Play();
 ```
 值得注意的一点是使用SubtitleManager.Instance产生的内置效果字幕默认状态下会在创建后立即播放，如果需要加入Sequence统一管理，则需要将最后一个参数设置为false，如果使用的是Subtitle的构造函数则不需要进行设置。
+
+---
+## 暂停功能
+本系统中Subtitle、SubtitleSequence与SubtitleAsset在播放过程中均支持暂停与继续，但是值得注意的一点是，如果用户创建自定义效果（无论是使用SubtitleManager.Instance.ShowWithCustom还是使用Subtitle的onPlay，onUpdate，onComplete回调创建）。**如果需要系统对该效果实现暂停功能，用户需要使得自定义效果Tween均使用DoTween来创建，创建主体为该Subtitle所引用的Text上任意组件**。同时，**使用Unity协程创建的持续效果不会被SubtitleSystem暂停功能所响应**！  
+如上文中创建的自定义效果，字体颜色渐变为红色中，在onPlay方法使用到了DOColor方法，创建主体为Text，此Text为该Subtitle所引用的Text，故可以实现暂停功能。  
+值得注意的一点是，在本工程中提供了一个SubtitleUtility工具类，内部有WaitSecondsForSomething方法可实现延时效果，由于该方法内部原理是使用了协程Coroutine，所以使用该方法创建的SubtitleSequence不会被暂停功能所响应，即，上文Sequence可使用以下代码实现类似SubtitleSequence的效果：
+```csharp
+SubtitleManager.Instance.Show("字幕测试", 3f);
+        SubtitleUtility.WaitSecondsForSomething(() =>
+        {
+            SubtitleManager.Instance.Show("测试字幕，白色", Vector3.zero, 30, Color.white, 3f);
+            SubtitleUtility.WaitSecondsForSomething(() =>
+            {
+                SubtitleManager.Instance.ShowWithFade("淡入测试", Vector3.zero, 30, Color.white, 0, 3f, 0);
+                SubtitleUtility.WaitSecondsForSomething(() =>
+                {
+                    SubtitleManager.Instance.ShowWithFade("淡出测试", Vector3.zero, 30, Color.white, 0, 0, 3f);
+                    SubtitleUtility.WaitSecondsForSomething(() =>
+                    {
+                        SubtitleManager.Instance.ShowWithShakePosition("位置震动测试", Vector3.zero, 30, Color.white, 3f, 30f, true);
+                        SubtitleUtility.WaitSecondsForSomething(() =>
+                        {
+                            SubtitleManager.Instance.ShowWithShakeRotation("旋转震动测试", Vector3.zero, 30, Color.white, 3f, 90f, true);
+                            SubtitleUtility.WaitSecondsForSomething(() =>
+                            {
+                                SubtitleManager.Instance.ShowWithShakeScale("缩放震动测试", Vector3.zero, 30, Color.white, 3f, 10f, true);
+                                SubtitleUtility.WaitSecondsForSomething(() =>
+                                {
+                                    SubtitleManager.Instance.ShowWithTypewriter("打字机效果预览字幕", Vector3.zero, 30, Color.white, 3f, 3f / 9f);
+                                    SubtitleUtility.WaitSecondsForSomething(() =>
+                                    {
+                                        SubtitleManager.Instance.ShowWithCustom("自定义效果字幕，变成红色", Vector3.zero, 30, Color.white, 3f, (t, d) => t.DOColor(Color.red, 3f), null, null);
+                                        SubtitleUtility.WaitSecondsForSomething(() =>
+                                        {
+                                            SubtitleManager.Instance.ShowVertical("竖排字幕测试", Vector3.zero, 30, Color.white, 3f);
+                                            SubtitleUtility.WaitSecondsForSomething(() =>
+                                            {
+                                                SubtitleManager.Instance.Show("常驻字幕");
+                                            }, 3f);
+                                        }, 3f);
+                                    }, 6f);
+                                }, 3f);
+                            }, 3f);
+                        }, 3f);
+                    }, 3f);
+                }, 3f);
+            }, 3f);
+        }, 3f);
+```
+但是上文代码所产生的效果并不能被SubtitleSystem的暂停功能所响应，即使将上文所有Subtitle均加入一个新创建的SubtitleSequence中。
 
 ---
 ## 其他API
@@ -165,3 +218,4 @@ public static void StopAllCoroutines(string coroutineTag);
 ---
 ## 下载
 1. [SubtitleSystem_V1.0 with DOTween_v1.1.575 (Unity2019.3.0f6).unitypackage](../assets/downloadable/SubtitleSystem_Unity2019.3.0f6.unitypackage)  
+2. [SubtitleSystem_V1.0f1 with DOTween_v1.1.575 (Unity2019.3.0f6).unitypackage](../assets/downloadable/SubtitleSystem_v1.0f1.unitypackage)  
