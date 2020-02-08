@@ -217,5 +217,5 @@ public static void StopAllCoroutines(string coroutineTag);
 
 ---
 ## 下载
-1. [SubtitleSystem_V1.0 with DOTween_v1.1.575 (Unity2019.3.0f6).unitypackage](../assets/downloadable/SubtitleSystem_Unity2019.3.0f6.unitypackage)  
+1. [SubtitleSystem_V1.0f2 with DOTween_v1.1.575 (Unity2019.3.0f6).unitypackage](../assets/downloadable/SubtitleSystem_v1.0f2.unitypackage)  
 2. [SubtitleSystem_V1.0f1 with DOTween_v1.1.575 (Unity2019.3.0f6).unitypackage](../assets/downloadable/SubtitleSystem_v1.0f1.unitypackage)  
