@@ -3,10 +3,10 @@ using XInputDotNetPure;
 
 static public class XInput
 {
-    static private bool[] isPressedArray = new bool[4];
-    static private bool[] isUpArray = new bool[4];
-    static private bool[] isPressedAxisArray = new bool[4];
-    static private bool[] isUpAxisArray = new bool[4];
+    static private bool[,] buttonPressed = new bool[4, 14];
+    static private bool[,] buttonUp = new bool[4, 14];
+    static private bool[,] axisPressed = new bool[4, 6];
+    static private bool[,] axisUp = new bool[4, 6]; 
 
     static public bool HasConnected(PlayerIndex index)
     {
@@ -28,14 +28,14 @@ static public class XInput
     {
         if (HasConnected(index))
         {
-            if (!GetIsPressed(index) && button.ToButtonState(index) == ButtonState.Pressed)
+            if (!buttonPressed[(int)index, (int)button] && button.ToButtonState(index) == ButtonState.Pressed)
             {
-                SetIsPressed(index, true);
+                buttonPressed[(int)index, (int)button] = true;
                 return true;
             }
-            else if (GetIsPressed(index) && button.ToButtonState(index) == ButtonState.Released)
+            else if (buttonPressed[(int)index, (int)button] && button.ToButtonState(index) == ButtonState.Released)
             {
-                SetIsPressed(index, false);
+                buttonPressed[(int)index, (int)button] = false;
                 return false;
             }
             else
@@ -55,14 +55,14 @@ static public class XInput
     {
         if (HasConnected(index))
         {
-            if (!GetIsUp(index) && button.ToButtonState(index) == ButtonState.Pressed)
+            if (!buttonUp[(int)index, (int)button] && button.ToButtonState(index) == ButtonState.Pressed)
             {
-                SetIsUp(index, true);
+                buttonUp[(int)index, (int)button] = true;
                 return false;
             }
-            else if (GetIsUp(index) && button.ToButtonState(index) == ButtonState.Released)
+            else if (buttonUp[(int)index, (int)button] && button.ToButtonState(index) == ButtonState.Released)
             {
-                SetIsUp(index, false);
+                buttonUp[(int)index, (int)button] = false;
                 return true;
             }
             else
@@ -110,14 +110,14 @@ static public class XInput
     {
         if (HasConnected(index))
         {
-            if (!GetAxisIsPressed(index) && axis.ToButtonState(index) == ButtonState.Pressed)
+            if (!axisPressed[(int)index, (int)axis] && axis.ToButtonState(index) == ButtonState.Pressed)
             {
-                SetAxisIsPressed(index, true);
+                axisPressed[(int)index, (int)axis] = true;
                 return true;
             }
-            else if (GetAxisIsPressed(index) && axis.ToButtonState(index) == ButtonState.Released)
+            else if (axisPressed[(int)index, (int)axis] && axis.ToButtonState(index) == ButtonState.Released)
             {
-                SetAxisIsPressed(index, false);
+                axisPressed[(int)index, (int)axis] = false;
                 return false;
             }
             else
@@ -207,42 +207,6 @@ static public class XInput
     static public ButtonState ToButtonState(this XboxAxis xa, PlayerIndex index, float cmpBase = 0, CompareType cmp = CompareType.Greater)
     {
         return GetCmpResult(GetAxis(index, xa), cmpBase, cmp) ? ButtonState.Pressed : ButtonState.Released;
-    }
-
-    static private bool GetIsPressed(PlayerIndex index)
-    {
-        return isPressedArray[(int)index];
-    }
-    static private bool GetIsUp(PlayerIndex index)
-    {
-        return isUpArray[(int)index];
-    }
-
-    static private bool GetAxisIsPressed(PlayerIndex index)
-    {
-        return isPressedAxisArray[(int)index];
-    }
-    static private bool GetAxisIsUp(PlayerIndex index)
-    {
-        return isUpAxisArray[(int)index];
-    }
-
-    static private void SetIsPressed(PlayerIndex index, bool value)
-    {
-        isPressedArray[(int)index] = value;
-    }
-    static private void SetIsUp(PlayerIndex index, bool value)
-    {
-        isUpArray[(int)index] = value;
-    }
-
-    static private void SetAxisIsPressed(PlayerIndex index, bool value)
-    {
-        isPressedAxisArray[(int)index] = value;
-    }
-    static private void SetAxisIsUp(PlayerIndex index, bool value)
-    {
-        isUpAxisArray[(int)index] = value;
     }
 
     static private bool GetCmpResult(float value, float cmpBase, CompareType cmp)
