@@ -20,8 +20,8 @@ SubtitleSystem是一个便于在游戏内添加字幕以及拓展的Unity开源�
 - 创建SubtitleAsset资源以持久化存储字幕
 - 使用SubtitleAssetEditorWindow以方便查看与编辑字幕文件
 - 使用SubtitleAssetPlayer以实现字幕的顺序播放
-- 使用SubtitleManager单例以实现字定义字幕显示
-- 使用SubtitleSequence以实现字定义字幕序列
+- 使用SubtitleManager单例以实现自定义字幕显示
+- 使用SubtitleSequence以实现自定义字幕序列
 - 使用Subtitle以拓展字幕显示形式
 
 V1.0使用Unity2018.3.0f2创建，在Unity2019.3.0f6上测试运行正常，理论上可运行于DoTween所支持的所有Unity版本上。
