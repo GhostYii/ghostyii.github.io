@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "在Unity中实现字幕系统"
+title: "Subtitle System简易手册"
 image: ''
 date:  2020-02-03 00:00:00
 tags:
@@ -9,6 +9,7 @@ tags:
 description: ''
 categories:
 - 游戏开发
+- 模块手册
 ---
 
 ---
