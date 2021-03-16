@@ -44,7 +44,9 @@ ObjectPoolManager.Instance.CreatePrefabPool(string name, GameObject go, int size
 ```
 Pool对象池和PrefabPool对象池的区别在于PrefabPool中的对象已经限定为GameObject，而Pool则是一个通用对象池，同时**PrefabPool中分配的对象将都带有PrefabPoolObject脚本**。
 
-参数'autoExpand'表示当池被填充时，系统将自动创建更多对象（原始池的大小）以供下一次分配。这意味着**对象池每次填满时都会自动扩展为当前对象池大小的两倍**。
+参数'autoExpand'表示当池被填充时，系统将自动创建更多对象（原始池的大小）以供下一次分配。这意味着**对象池每次填满时都会自动扩展为当前对象池大小的两倍**。  
+
+Pool< T>和PrefabPool都会在初始化时进行预热处理，即初始化阶段一次性生成初始大小的所有对象。
 
 对象池通用分配和回收可以使用以下API实现：
 ```csharp
@@ -55,7 +57,7 @@ ObjectPool.Instance.RecycleFromPool<T>(string name, T obj);
 ```
 
 ---
-## 0x2. Pool< T>和Prefab如何使用？
+## 0x2. Pool< T>和PrefabPool如何使用？
 Pool< T>是MLObjectPool中通用的对象池，但是其分配和回收操作需要手动定义。对Pool< T>，创建、分配和回收调用参考以下API：
 ```csharp
 //create
